@@ -4,23 +4,13 @@ export class LoginPage {
     cy.visit('/');
   }
 
-  // Вводить юзернейм у відповідне поле
-  fillUsername(username) {
+  // Логується використовуючи креденшіали з .env
+  loginWithEnvCredentials() {
+    const username = Cypress.env('username');
+    const password = Cypress.env('password');
+
     cy.get('[data-test="username"]').type(username);
-  }
-
-  // Вводить пароль у відповідне поле
-  fillPassword(password) {
     cy.get('[data-test="password"]').type(password);
-  }
-
-  // Натискає кнопку "Login"
-  submit() {
     cy.get('[data-test="login-button"]').click();
-  }
-
-  // Перевіряє, що зʼявилось повідомлення про помилку
-  verifyErrorMessageVisible() {
-    cy.get('[data-test="error"]').should('be.visible');
   }
 }

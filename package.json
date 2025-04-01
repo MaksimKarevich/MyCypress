@@ -12,5 +12,8 @@
   "description": "",
   "devDependencies": {
     "cypress": "^14.2.1"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7"
   }
 }
