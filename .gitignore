@@ -1,5 +1,36 @@
+# Dependencies
 node_modules
+
+# Cypress artifacts
 cypress/screenshots
 cypress/videos
+
+# System files
 .DS_Store
+
+# Config files (secrets and formatting)
 .env
+.prettierrc
+
+# IDE / редактор
+.vscode/
+.idea/
+
+# Логи
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Coverage / звіти
+coverage/
+cypress-coverage/
+
+# Кеші
+.cache/
+dist/
+tmp/
+temp/
+
+# System files
+Thumbs.db
+*.swp
