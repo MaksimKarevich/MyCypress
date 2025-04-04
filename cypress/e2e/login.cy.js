@@ -1,4 +1,5 @@
 import { LoginPage } from '../pages/loginPage';
+require('dotenv').config();
 
 describe('Login tests', () => {
   beforeEach(() => {
@@ -8,21 +9,25 @@ describe('Login tests', () => {
   const loginPage = new LoginPage();
 
   afterEach(() => {
-    cy.clearCookies();
-    cy.clearLocalStorage();
+    cy.clearSession();
   });
 
   it('logs in with valid credentials', () => {
     // Відкриваємо сайт
     loginPage.visit();
 
+    console.log('Username from test:', Cypress.env('CYPRESS_username'));
+    console.log('Password from test:', Cypress.env('CYPRESS_password'));
     // Вхід з даними з .env
-    loginPage.loginWithEnvCredentials();
+    loginPage.login(
+      Cypress.env('CYPRESS_username'),
+      Cypress.env('CYPRESS_password')
+    );
 
     // Перевіряємо, що після логіну перекинуло на сторінку з товарами
     cy.url().should('include', '/inventory.html');
-    cy.get('.title').should('have.text', 'Products');
-    cy.get('.inventory_item').should('have.length.greaterThan', 0);
+    loginPage.pageTitle().should('have.text', 'Products');
+    loginPage.inventoryItems().should('have.length.greaterThan', 0);
   });
 
   it('logs out after successful login', () => {
@@ -30,11 +35,14 @@ describe('Login tests', () => {
     loginPage.visit();
 
     // Вхід з даними з .env
-    loginPage.loginWithEnvCredentials();
+    loginPage.login(
+      Cypress.env('CYPRESS_username'),
+      Cypress.env('CYPRESS_password')
+    );
 
     // Відкриваємо меню і натискаємо Logout
-    cy.get('#react-burger-menu-btn').click();
-    cy.get('#logout_sidebar_link').click();
+    loginPage.openMenu();
+    loginPage.logout();
 
     // Перевіряємо, що повернулись на логін-сторінку
     cy.url().should('eq', `${Cypress.config().baseUrl}/`);
@@ -46,16 +54,18 @@ describe('Login tests', () => {
 
     // Завантажуємо фікстуру з користувачами
     cy.fixture('users').then((data) => {
-      cy.get('[data-test="username"]').type(data.invalidUser.username);
-      cy.get('[data-test="password"]').type(data.invalidUser.password);
-      cy.get('[data-test="login-button"]').click();
+      loginPage.fillUsername(data.invalidUser.username);
+      loginPage.fillPassword(data.invalidUser.password);
+      loginPage.submit();
 
       // Перевіряємо, що зʼявилась помилка
-      cy.get('[data-test="error"]').should('be.visible');
-      cy.get('[data-test="error"]').should(
-        'contain',
-        'Username and password do not match any user in this service'
-      );
+      loginPage.errorMessage().should('be.visible');
+      loginPage
+        .errorMessage()
+        .should(
+          'contain',
+          'Username and password do not match any user in this service'
+        );
     });
   });
 
@@ -65,16 +75,15 @@ describe('Login tests', () => {
 
     // Завантажуємо фікстуру з користувачами
     cy.fixture('users').then((data) => {
-      cy.get('[data-test="username"]').type(data.lockedOutUser.username);
-      cy.get('[data-test="password"]').type(data.lockedOutUser.password);
-      cy.get('[data-test="login-button"]').click();
+      loginPage.fillUsername(data.lockedOutUser.username);
+      loginPage.fillPassword(data.lockedOutUser.password);
+      loginPage.submit();
 
       // Перевіряємо, що зʼявилась помилка
-      cy.get('[data-test="error"]').should('be.visible');
-      cy.get('[data-test="error"]').should(
-        'contain',
-        'Sorry, this user has been locked out.'
-      );
+      loginPage.errorMessage().should('be.visible');
+      loginPage
+        .errorMessage()
+        .should('contain', 'Sorry, this user has been locked out.');
     });
   });
 });

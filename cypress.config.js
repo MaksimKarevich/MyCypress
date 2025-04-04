@@ -12,6 +12,9 @@ module.exports = defineConfig({
     specPattern: 'cypress/e2e/**/*.cy.js',
     baseUrl: process.env.CYPRESS_baseUrl,
     setupNodeEvents(on, config) {
+      console.log('Environment Variables:', process.env);
+      console.log('CYPRESS_username:', process.env.CYPRESS_username);
+      console.log('CYPRESS_password:', process.env.CYPRESS_password);
       // Прокидаємо змінні в Cypress.env()
       config.env.username = process.env.CYPRESS_username;
       config.env.password = process.env.CYPRESS_password;
