@@ -77,4 +77,42 @@ describe('Login tests', () => {
         .should('contain', 'Sorry, this user has been locked out.');
     });
   });
+
+  it('should show error when username and password are empty', () => {
+    // Відкриваємо сайт
+    loginPage.visit();
+
+    // Відправляємо форму без введення логіна і паролю
+    loginPage.submit();
+
+    // Перевіряємо повідомлення про помилку
+    loginPage.errorMessage().should('be.visible');
+    loginPage.errorMessage().should('contain', 'Username is required');
+  });
+
+  it('should show error when username is missing', () => {
+    // Відкриваємо сайт
+    loginPage.visit();
+
+    // Вводимо тільки пароль
+    loginPage.fillPassword('somePassword');
+    loginPage.submit();
+
+    // Перевіряємо повідомлення про помилку
+    loginPage.errorMessage().should('be.visible');
+    loginPage.errorMessage().should('contain', 'Username is required');
+  });
+
+  it('should show error when password is missing', () => {
+    // Відкриваємо сайт
+    loginPage.visit();
+
+    // Вводимо тільки логін
+    loginPage.fillUsername('someUser');
+    loginPage.submit();
+
+    // Перевіряємо повідомлення про помилку
+    loginPage.errorMessage().should('be.visible');
+    loginPage.errorMessage().should('contain', 'Password is required');
+  });
 });
