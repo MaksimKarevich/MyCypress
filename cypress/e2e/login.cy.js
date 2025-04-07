@@ -1,5 +1,4 @@
 import { LoginPage } from '../pages/loginPage';
-require('dotenv').config();
 
 describe('Login tests', () => {
   beforeEach(() => {
@@ -16,13 +15,8 @@ describe('Login tests', () => {
     // Відкриваємо сайт
     loginPage.visit();
 
-    console.log('Username from test:', Cypress.env('CYPRESS_username'));
-    console.log('Password from test:', Cypress.env('CYPRESS_password'));
     // Вхід з даними з .env
-    loginPage.login(
-      Cypress.env('CYPRESS_username'),
-      Cypress.env('CYPRESS_password')
-    );
+    loginPage.login(Cypress.env('username'), Cypress.env('password'));
 
     // Перевіряємо, що після логіну перекинуло на сторінку з товарами
     cy.url().should('include', '/inventory.html');
@@ -35,10 +29,7 @@ describe('Login tests', () => {
     loginPage.visit();
 
     // Вхід з даними з .env
-    loginPage.login(
-      Cypress.env('CYPRESS_username'),
-      Cypress.env('CYPRESS_password')
-    );
+    loginPage.login(Cypress.env('username'), Cypress.env('password'));
 
     // Відкриваємо меню і натискаємо Logout
     loginPage.openMenu();
