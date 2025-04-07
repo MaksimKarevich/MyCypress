@@ -15,6 +15,20 @@ module.exports = defineConfig({
       // Прокидаємо змінні в Cypress.env()
       config.env.username = process.env.CYPRESS_username;
       config.env.password = process.env.CYPRESS_password;
+
+      // Додаємо налаштування для запуску браузера
+      on('before:browser:launch', (browser = {}, launchOptions) => {
+        if (browser.family === 'chromium' && browser.name !== 'electron') {
+          // Вимикаємо підказки Chrome щодо збереження паролів
+          launchOptions.args.push(
+            '--disable-password-generation',
+            '--disable-save-password-bubble',
+            '--disable-features=PasswordManagerOnboarding,PasswordCheck'
+          );
+        }
+        return launchOptions;
+      });
+
       return config;
     },
   },
